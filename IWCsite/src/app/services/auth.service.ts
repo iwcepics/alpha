@@ -1,33 +1,22 @@
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-
-import { User } from '../interfaces/user';
-import { Teacher } from '../interfaces/teacher';
-import { Student } from '../interfaces/student';
+import { RegisterPostData, User } from '../interfaces/auth';
+import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
+  private baseUrl = 'http://localhost:3000';
+  constructor(private http: HttpClient) {}
 
-  private apiUrl = 'http://localhost:8080/api/auth';
-
-  constructor(private http: HttpClient) { }
-
-  login(user: User): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, user);
+  registerUser(postData: RegisterPostData) {
+    return this.http.post(`${this.baseUrl}/users`, postData);
   }
 
-  registerTeacher(teacher: Teacher) {
-    return this.http.post(`${this.apiUrl}/register/teacher`, teacher);
-  }
-
-  registerStudent(student: Student) {
-    return this.http.post(`${this.apiUrl}/register/student`, student);
-  }
-
-  getAllTeachers() {
-    return this.http.get(`${this.apiUrl}/teachers/all`);
+  getUserDetails(email: string, password: string): Observable<User[]> {
+    return this.http.get<User[]>(
+      `${this.baseUrl}/users?email=${email}&password=${password}`
+    );
   }
 }

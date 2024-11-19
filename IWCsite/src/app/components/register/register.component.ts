@@ -5,18 +5,15 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router, RouterLink, RouterOutlet } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
-import { passwordMatchValidator } from '../../shared/password-match-directive';
+import { passwordMismatchValidator } from '../../shared/password-mismatch.directive';
 import { AuthService } from '../../services/auth.service';
-import { Teacher } from '../../interfaces/teacher';
-import { Student } from '../../interfaces/student';
-import { User } from '../../interfaces/user';
+import { RegisterPostData } from '../../interfaces/auth';
 import { MessageService } from 'primeng/api';
-import { HttpRequest } from '@angular/common/http';
 
 @Component({
   selector: 'app-register',
@@ -33,10 +30,9 @@ import { HttpRequest } from '@angular/common/http';
   styleUrl: './register.component.css',
 })
 export class RegisterComponent {
-  private registerService = inject(AuthService);
+  private registerTeacherService = inject(AuthService);
   private messageService = inject(MessageService);
   private router = inject(Router);
-  
   registerForm = new FormGroup(
     {
       fullName: new FormControl('', [Validators.required]),
@@ -48,15 +44,14 @@ export class RegisterComponent {
       confirmPassword: new FormControl('', [Validators.required]),
     },
     {
-      validators: passwordMatchValidator,
+      validators: passwordMismatchValidator,
     }
   );
-  
 
   onRegister() {
     const postData = { ...this.registerForm.value };
     delete postData.confirmPassword;
-    this.registerService.registerTeacher(postData as Teacher).subscribe({
+    this.registerTeacherService.registerUser(postData as RegisterPostData).subscribe({
       next: (response) => {
         this.messageService.add({
           severity: 'success',

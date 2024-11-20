@@ -7,6 +7,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { AuthService } from '../../services/auth.service';
 import { MessageService } from 'primeng/api';
+import { MenuComponent } from '../menu/menu.component';
 
 @Component({
   selector: 'app-login',
@@ -18,11 +19,12 @@ import { MessageService } from 'primeng/api';
     PasswordModule,
     ButtonModule,
     RouterLink,
+    MenuComponent,
   ],
-  templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
+  templateUrl: './login-teacher.component.html',
+  styleUrl: './login-teacher.component.css',
 })
-export class LoginComponent {
+export class LoginTeacherComponent {
   login = {
     email: '',
     password: '',
@@ -33,7 +35,7 @@ export class LoginComponent {
   private messageService = inject(MessageService);
   onLogin() {
     const { email, password } = this.login;
-    this.authService.getUserDetails(email, password).subscribe({
+    this.authService.getTeacherDetails(email, password).subscribe({
       next: (response) => {
         if (response.length >= 1) {
           sessionStorage.setItem('email', email);

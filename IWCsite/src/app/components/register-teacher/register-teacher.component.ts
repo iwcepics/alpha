@@ -12,11 +12,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { passwordMismatchValidator } from '../../shared/password-mismatch.directive';
 import { AuthService } from '../../services/auth.service';
-import { RegisterPostData } from '../../interfaces/auth';
+import { RegisterTeacherPostData } from '../../interfaces/auth';
 import { MessageService } from 'primeng/api';
+import { MenuComponent } from '../menu/menu.component';
 
 @Component({
-  selector: 'app-register',
+  selector: 'app-register-teacher',
   standalone: true,
   imports: [
     ReactiveFormsModule,
@@ -25,11 +26,12 @@ import { MessageService } from 'primeng/api';
     PasswordModule,
     ButtonModule,
     RouterLink,
+    MenuComponent,
   ],
-  templateUrl: './register.component.html',
-  styleUrl: './register.component.css',
+  templateUrl: './register-teacher.component.html',
+  styleUrl: './register-teacher.component.css',
 })
-export class RegisterComponent {
+export class RegisterTeacherComponent {
   private registerTeacherService = inject(AuthService);
   private messageService = inject(MessageService);
   private router = inject(Router);
@@ -51,14 +53,14 @@ export class RegisterComponent {
   onRegister() {
     const postData = { ...this.registerForm.value };
     delete postData.confirmPassword;
-    this.registerTeacherService.registerUser(postData as RegisterPostData).subscribe({
+    this.registerTeacherService.registerTeacher(postData as RegisterTeacherPostData).subscribe({
       next: (response) => {
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
           detail: 'Registered successfully',
         });
-        this.router.navigate(['login']);
+        this.router.navigate(['login-teacher']);
         console.log(response);
       },
       error: (err) => {

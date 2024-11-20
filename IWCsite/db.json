@@ -1,33 +1,18 @@
 {
-  "users": [
+  "teachers": [
     {
-      "fullName": "dfsdf",
-      "email": "fsdf@sfdfg.fgdf",
-      "password": "123",
-      "id": "1"
-    },
-    {
-      "fullName": "Test User",
-      "email": "haseenakhader.uk@gmail.com",
-      "password": "123",
-      "id": "2"
-    },
-    {
-      "fullName": "Test User",
-      "email": "haseenakhader.uk@gmail.com",
-      "password": "123456",
-      "id": "3"
-    },
-    {
-      "fullName": "Test User",
-      "email": "haseenakhader.uk@gmail.com",
-      "password": "123",
-      "id": "4"
-    },
-    {
-      "id": "5be1",
-      "fullName": "Test User",
+      "id": "aa05",
+      "fullName": "Test Teacher",
       "email": "test@gmail.com",
+      "password": "test1234"
+    }
+  ],
+  "students": [
+    {
+      "id": "80ff",
+      "fullName": "Test Student",
+      "language": "English",
+      "level": "C",
       "password": "test1234"
     }
   ]

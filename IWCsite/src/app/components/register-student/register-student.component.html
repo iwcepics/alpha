@@ -5,14 +5,14 @@
     <p-card header="Register Student" [style]="{ width: '400px' }">
       <form [formGroup]="registerForm" (ngSubmit)="onRegister()">
         <div class="field">
-          <label for="fullName">Full Name</label>
+          <label for="name">Full Name</label>
           <input
             pInputText
             class="w-full"
-            id="fullName"
-            formControlName="fullName"
+            id="name"
+            formControlName="name"
           />
-          @if(fullName.invalid && (fullName.dirty || fullName.touched)){
+          @if(name.invalid && (name.dirty || name.touched)){
           <small class="block p-error">Full name is required</small>
           }
         </div>

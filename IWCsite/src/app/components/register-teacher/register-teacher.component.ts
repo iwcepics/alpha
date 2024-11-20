@@ -12,7 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { passwordMismatchValidator } from '../../shared/password-mismatch.directive';
 import { AuthService } from '../../services/auth.service';
-import { RegisterTeacherPostData } from '../../interfaces/auth';
+import { RegisterTeacherPostData, Teacher } from '../../interfaces/auth';
 import { MessageService } from 'primeng/api';
 import { MenuComponent } from '../menu/menu.component';
 
@@ -25,7 +25,6 @@ import { MenuComponent } from '../menu/menu.component';
     InputTextModule,
     PasswordModule,
     ButtonModule,
-    RouterLink,
     MenuComponent,
   ],
   templateUrl: './register-teacher.component.html',
@@ -37,7 +36,7 @@ export class RegisterTeacherComponent {
   private router = inject(Router);
   registerForm = new FormGroup(
     {
-      fullName: new FormControl('', [Validators.required]),
+      name: new FormControl('', [Validators.required]),
       email: new FormControl('', [
         Validators.required,
         Validators.pattern(/[a-z0-9\._%\+\-]+@[a-z0-9\.\-]+\.[a-z]{2,}$/),
@@ -58,24 +57,24 @@ export class RegisterTeacherComponent {
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'Registered successfully',
+          detail: response.message,
         });
         this.router.navigate(['login-teacher']);
         console.log(response);
       },
       error: (err) => {
-        console.log(err);
+        const errorMsg = err.error.message || 'Registration failed';
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Something went wrong',
+          detail: errorMsg,
         });
       },
     });
   }
 
-  get fullName() {
-    return this.registerForm.controls['fullName'];
+  get name() {
+    return this.registerForm.controls['name'];
   }
 
   get email() {

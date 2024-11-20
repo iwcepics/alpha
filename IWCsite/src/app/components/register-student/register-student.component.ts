@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import {
-  AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -13,10 +12,9 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { passwordMismatchValidator } from '../../shared/password-mismatch.directive';
 import { AuthService } from '../../services/auth.service';
-import { RegisterStudentPostData } from '../../interfaces/auth';
+import { RegisterStudentPostData, Student } from '../../interfaces/auth';
 import { MessageService } from 'primeng/api';
 import { MenuComponent } from '../menu/menu.component';
-import { map } from 'rxjs';
 
 @Component({
   selector: 'app-register-student',
@@ -27,7 +25,6 @@ import { map } from 'rxjs';
     InputTextModule,
     PasswordModule,
     ButtonModule,
-    RouterLink,
     MenuComponent,
   ],
   templateUrl: './register-student.component.html',
@@ -39,7 +36,7 @@ export class RegisterStudentComponent {
   private router = inject(Router);
   registerForm = new FormGroup(
     {
-      fullName: new FormControl('', [Validators.required]),
+      name: new FormControl('', [Validators.required]),
       language: new FormControl('', [
         Validators.required,
         Validators.pattern(/[a-zA-Z]+/),
@@ -61,24 +58,24 @@ export class RegisterStudentComponent {
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'Registered successfully',
+          detail: response.message,
         });
         this.router.navigate(['login-student']);
         console.log(response);
       },
       error: (err) => {
-        console.log(err);
+        const errorMsg = err.error.message || 'Registration failed';
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Something went wrong',
+          detail: errorMsg,
         });
       },
     });
   }
 
-  get fullName() {
-    return this.registerForm.controls['fullName'];
+  get name() {
+    return this.registerForm.controls['name'];
   }
 
   get language() {

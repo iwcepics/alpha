@@ -15,15 +15,15 @@ public class TeacherService {
 
     public Teacher registerTeacher(Teacher teacher) {
         // Additional validation and business logic
-        return teacherRepository.save(teacher);
+        return (Teacher) teacherRepository.save(teacher);
     }
 
     public Teacher getTeacherByEmail(String email) {
-        return teacherRepository.findByEmail(email).orElse(null);
+        return teacherRepository.findByEmail(email);
     }
 
     public Teacher getTeacherByEmailAndPassword(String email, String password) {
-        return teacherRepository.findByEmailAndPassword(email, password).orElse(null);
+        return teacherRepository.findByEmailAndPassword(email, password);
     }
 
     public List<Teacher> getAllTeachers() {

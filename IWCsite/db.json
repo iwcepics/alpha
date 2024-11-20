@@ -2,7 +2,7 @@
   "teachers": [
     {
       "id": "aa05",
-      "fullName": "Test Teacher",
+      "name": "Test Teacher",
       "email": "test@gmail.com",
       "password": "test1234"
     }
@@ -10,7 +10,7 @@
   "students": [
     {
       "id": "80ff",
-      "fullName": "Test Student",
+      "name": "Test Student",
       "language": "English",
       "level": "C",
       "password": "test1234"

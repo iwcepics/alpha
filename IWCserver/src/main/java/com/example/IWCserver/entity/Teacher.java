@@ -20,12 +20,13 @@ public class Teacher extends User {
     // Constructors
     public Teacher() {}
 
-    public Teacher(String name, String password, String email) {
+    public Teacher(String name, String email, String password) {
         super(name, password, Role.TEACHER);
         this.email = email;
     }
-
+    
     // Getters and Setters
+    
     public String getEmail() {
         return email;
     }

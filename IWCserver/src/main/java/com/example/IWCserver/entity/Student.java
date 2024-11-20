@@ -7,7 +7,7 @@ import java.util.List;
 @Table(name = "students")
 public class Student extends User {
 
-    private char level; //A, B, C, or D
+    private String level; //A, B, C, or D
     private String language;
 
     // Relationships
@@ -20,20 +20,18 @@ public class Student extends User {
     // Constructors
     public Student() {}
 
-    public Student(String name, String password, char level, String language) {
+    public Student(String name, String password, String level, String language) {
         super(name, password, Role.STUDENT);
-        
         this.level = level;
         this.language = language;
     }
 
     // Getters and Setters
-    
-    public char getLevel() {
+    public String getLevel() {
         return level;
     }
 
-    public void setLevel(char level) {
+    public void setLevel(String level) {
         this.level = level;
     }
 

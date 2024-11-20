@@ -8,9 +8,10 @@ import { PasswordModule } from 'primeng/password';
 import { AuthService } from '../../services/auth.service';
 import { MessageService } from 'primeng/api';
 import { MenuComponent } from '../menu/menu.component';
+import { Student } from '../../interfaces/auth';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-login-student',
   standalone: true,
   imports: [
     CardModule,
@@ -18,7 +19,6 @@ import { MenuComponent } from '../menu/menu.component';
     FormsModule,
     PasswordModule,
     ButtonModule,
-    RouterLink,
     MenuComponent,
   ],
   templateUrl: './login-student.component.html',
@@ -36,23 +36,15 @@ export class LoginStudentComponent {
   onLogin() {
     const { id, password } = this.login;
     this.authService.getStudentDetails(parseInt(id), password).subscribe({
-      next: (response) => {
-        if (response.length >= 1) {
-            sessionStorage.setItem('id', id);
-          this.router.navigate(['home']);
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Something went wrong',
-          });
-        }
+      next: (response: Student) => {
+        sessionStorage.setItem('id', id);
+        this.router.navigate(['home']);
       },
       error: () => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Something went wrong',
+          detail: 'Invalid ID or password',
         });
       },
     });

@@ -1,36 +1,39 @@
 package com.example.IWCserver.controller;
 
-import com.example.IWCserver.dto.LoginRequest;
 import com.example.IWCserver.dto.StudentRegistrationDto;
 import com.example.IWCserver.dto.TeacherRegistrationDto;
-import com.example.IWCserver.entity.Role;
+import com.example.IWCserver.entity.Student;
 import com.example.IWCserver.entity.Teacher;
 import com.example.IWCserver.service.TeacherService;
 import com.example.IWCserver.service.StudentService;
 
-import org.slf4j.Logger;
+
+//import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.*;
+//import org.springframework.security.authentication.*;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
-import org.springframework.security.core.context.SecurityContextHolder;
+//import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
+//import org.springframework.security.core.Authentication;
+//import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.dao.DataIntegrityViolationException;
+
+import java.util.Map;
 
 /**
  * Endpoints related to authentication
  */
-//@CrossOrigin(origins = "http://localhost:4200") // Allow requests from Angular app
+@CrossOrigin(origins = "http://localhost:4200") // Allow requests from Angular app
 
 @RestController
 @RequestMapping("/api/auth")
 @EnableMethodSecurity
 public class AuthController {
 
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(AuthController.class);
+    //private static final Logger logger = org.slf4j.LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
     private TeacherService teacherService;
@@ -38,53 +41,64 @@ public class AuthController {
     private StudentService studentService;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    //@Autowired
+    //private AuthenticationManager authenticationManager;
     
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        try {
-            logger.debug("Login attempt for user: {}", loginRequest.getIdentifier());
-            Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                    loginRequest.getIdentifier(),
-                    loginRequest.getPassword()
-                )
-            );
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            return ResponseEntity.ok("Login successful");
-
-        } catch (AuthenticationException e) {
-            logger.error("Login failed for user: {} - Reason: {}", 
-                loginRequest.getIdentifier(), e.getMessage());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+    @GetMapping("/teachers")
+    public ResponseEntity<?> getTeacher(
+        @RequestParam(required = false) String email, 
+        @RequestParam(required = false) String password) {
+        if (email != null && password != null) {
+            Teacher teacher = teacherService.getTeacherByEmail(email);
+            if (teacher != null && passwordEncoder.matches(password, teacher.getPassword())) {
+                return ResponseEntity.ok(teacher);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+            }
+        } else {
+            return ResponseEntity.ok(teacherService.getAllTeachers());
         }
     }
 
-    @PostMapping("/register/teacher")
-    public ResponseEntity<?> registerTeacher(@RequestBody TeacherRegistrationDto dto) {
-        Teacher teacher = new Teacher();
-        teacher.setName(dto.getName());
-        teacher.setEmail(dto.getEmail());
-        teacher.setPassword(passwordEncoder.encode(dto.getPassword()));
-        teacher.setRole(Role.TEACHER);
-        
-        teacherService.registerTeacher(teacher);
-        return ResponseEntity.ok("Teacher registered successfully");
+    @GetMapping("/students")
+    public ResponseEntity<?> getStudent(
+        @RequestParam(required = false) Long id, 
+        @RequestParam(required = false) String password) {
+        if (id != null && password != null) {
+            Student student = studentService.getStudentById(id);
+            if (student != null && passwordEncoder.matches(password, student.getPassword())) {
+                return ResponseEntity.ok(student);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+            }
+        } else {
+            return ResponseEntity.ok(studentService.getAllStudents());
+        }
     }
 
-    @PreAuthorize("hasRole('TEACHER')")
-    @PostMapping("/register/student")
+    @PostMapping("/register-teacher")
+    public ResponseEntity<?> registerTeacher(@RequestBody TeacherRegistrationDto dto) {
+        try {
+            Teacher teacher = new Teacher(dto.getName(), dto.getEmail(), passwordEncoder.encode(dto.getPassword()));
+            teacherService.registerTeacher(teacher);
+            return ResponseEntity.ok(Map.of("message", "Registration successful"));
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "Email already in use"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Registration failed"));
+        }
+    }
+
+    @PostMapping("/register-student")
     public ResponseEntity<?> registerStudent(@RequestBody StudentRegistrationDto dto) {
         try {
-            StudentRegistrationDto registeredStudent = studentService.registerStudent(dto);
-            return ResponseEntity.ok(registeredStudent);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            Student student = new Student(dto.getName(), passwordEncoder.encode(dto.getPassword()), dto.getLevel(), dto.getLanguage());
+            studentService.registerStudent(student);
+            return ResponseEntity.ok(Map.of("message", "Registration successful"));
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", "ID already in use"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Registration failed");
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("message", "Registration failed"));
         }
     }
 

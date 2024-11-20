@@ -7,26 +7,27 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AuthService {
-  private baseUrl = 'http://localhost:3000';
+  private baseUrl = 'http://localhost:8080/api/auth';
   constructor(private http: HttpClient) {}
 
   registerStudent(postData: RegisterStudentPostData) {
-    return this.http.post(`${this.baseUrl}/students`, postData);
-  }
-
-  getStudentDetails(id: number, password: string): Observable<Student[]> {
-    return this.http.get<Student[]>(
-      `${this.baseUrl}/students?id=${id}&password=${password}`
-    );
+    return this.http.post<{ message: string }>(`${this.baseUrl}/register-student`, postData);
   }
 
   registerTeacher(postData: RegisterTeacherPostData) {
-    return this.http.post(`${this.baseUrl}/teachers`, postData);
+    return this.http.post<{ message: string }>(`${this.baseUrl}/register-teacher`, postData);
   }
 
-  getTeacherDetails(email: string, password: string): Observable<Teacher[]> {
-    return this.http.get<Teacher[]>(
+  getStudentDetails(id: number, password: string): Observable<Student> {
+    return this.http.get<Student>(
+      `${this.baseUrl}/students?id=${id}&password=${password}`
+    );
+  }
+  
+  getTeacherDetails(email: string, password: string): Observable<Teacher> {
+    return this.http.get<Teacher>(
       `${this.baseUrl}/teachers?email=${email}&password=${password}`
     );
   }
+  
 }

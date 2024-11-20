@@ -3,8 +3,8 @@ package com.example.IWCserver.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
 @Table(name = "users")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class User {
 
     @Id
@@ -12,10 +12,10 @@ public abstract class User {
     private Long id; // Primary Key, also used for student login
     private String name;
     private String password;
+    private Role role;
 
-    @Enumerated(EnumType.STRING)
-    private Role role; // Student or Teacher
     // Constructors
+    public User() {}
 
     public User(String name, String password, Role role) {
         this.name = name;
@@ -23,17 +23,7 @@ public abstract class User {
         this.role = role;
     }
 
-    public User() {}
     // Getters and Setters
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public String getName() {
         return name;
     }
@@ -57,4 +47,5 @@ public abstract class User {
     public void setRole(Role role) {
         this.role = role;
     }
+
 }

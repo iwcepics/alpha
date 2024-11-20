@@ -8,9 +8,10 @@ import { PasswordModule } from 'primeng/password';
 import { AuthService } from '../../services/auth.service';
 import { MessageService } from 'primeng/api';
 import { MenuComponent } from '../menu/menu.component';
+import { Teacher } from '../../interfaces/auth';
 
 @Component({
-  selector: 'app-login',
+  selector: 'app-login-teacher',
   standalone: true,
   imports: [
     CardModule,
@@ -36,23 +37,15 @@ export class LoginTeacherComponent {
   onLogin() {
     const { email, password } = this.login;
     this.authService.getTeacherDetails(email, password).subscribe({
-      next: (response) => {
-        if (response.length >= 1) {
-          sessionStorage.setItem('email', email);
-          this.router.navigate(['home']);
-        } else {
-          this.messageService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Something went wrong',
-          });
-        }
+      next: (response: Teacher) => {
+        sessionStorage.setItem('email', email);
+        this.router.navigate(['home']);
       },
       error: () => {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: 'Something went wrong',
+          detail: 'Invalid email or password',
         });
       },
     });

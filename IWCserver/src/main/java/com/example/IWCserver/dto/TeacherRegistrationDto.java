@@ -5,6 +5,8 @@ public class TeacherRegistrationDto {
     private String email;
     private String password;
 
+    // Default Constructor
+    public TeacherRegistrationDto() {}
     // Getters and setters
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }

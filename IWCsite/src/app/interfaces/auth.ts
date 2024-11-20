@@ -1,5 +1,5 @@
 export interface RegisterTeacherPostData {
-  fullName: string;
+  name: string;
   email: string;
   password: string;
 }
@@ -9,7 +9,7 @@ export interface Teacher extends RegisterTeacherPostData {
 }
 
 export interface RegisterStudentPostData {
-  fullName: string;
+  name: string;
   language: string;
   level: string;
   password: string;
